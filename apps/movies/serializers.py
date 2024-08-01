@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
+from django.conf import settings
+from urllib.parse import urlparse
 
 from .models import Movie
 
@@ -9,6 +11,14 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if representation['poster']:
+            representation["poster"] = self.get_base_url(instance.poster.url)
+        if representation['backdrop']:
+            representation["backdrop"] = self.get_base_url(instance.backdrop.url)
+        return representation
 
     def validate(self, attrs):        
         if 'title' in attrs:
@@ -31,3 +41,8 @@ class MovieSerializer(serializers.ModelSerializer):
         instance.vote_average = validated_data.get('vote_average', instance.vote_average)
         instance.save()
         return instance
+
+    def get_base_url(self, url):
+        parsed_url = urlparse(url)
+        production_url = f"{settings.DOMAIN}{parsed_url.path}"
+        return production_url
