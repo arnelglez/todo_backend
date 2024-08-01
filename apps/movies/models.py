@@ -1,8 +1,10 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 
 class Movie(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True)
     title = models.CharField(max_length=100)
     overview = models.CharField(max_length=100)
     release_date = models.DateField()
