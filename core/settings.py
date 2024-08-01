@@ -21,7 +21,7 @@ DEBUG = "AWS" not in os.environ
 
 DOMAIN = env("DOMAIN")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 CORS_ORIGIN_ALLOW_ALL = True
 
